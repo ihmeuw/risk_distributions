@@ -109,6 +109,30 @@ class BaseDistribution:
             p = p.values
         return p
 
+    def cdf(self, x: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
+        single_val = isinstance(x, (float, int))
+        values_only = isinstance(x, np.ndarray)
+
+        x, parameters = format_call_data(x, self.parameters)
+
+        computable = parameters[(parameters.sum(axis=1) != 0)
+                                & ~np.isnan(x)
+                                & (parameters['x_min'] <= x) & (x <= parameters['x_max'])].index
+
+        x.loc[computable] = self.process(x.loc[computable], parameters.loc[computable], 'cdf_preprocess')
+
+        c = pd.Series(np.nan, x.index)
+        params = parameters.loc[computable, list(self.expected_parameters)]
+        c.loc[computable] = self.distribution(**params.to_dict('series')).cdf(x.loc[computable])
+
+        c.loc[computable] = self.process(c.loc[computable], parameters.loc[computable], 'cdf_postprocess')
+
+        if single_val:
+            c = c.iloc[0]
+        if values_only:
+            c = c.values
+        return c
+
     def ppf(self, q: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
         single_val = isinstance(q, (float, int))
         values_only = isinstance(q, np.ndarray)
@@ -133,6 +157,8 @@ class BaseDistribution:
             x = x.values
         return x
 
+
+# TODO: DECIDE ON PROCESSING PER DISTRIBUTION
 
 class Beta(BaseDistribution):
 
