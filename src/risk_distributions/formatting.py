@@ -33,15 +33,11 @@ def cast_to_series(mean: Parameter, sd: Parameter) -> (pd.Series, pd.Series):
 
 def is_computable_empty(data: Parameters) -> bool:
     """ returns True if all parameters have only zero or/and nan."""
-    if isinstance(data, (np.ndarray, list, tuple)):
+    if isinstance(data, (np.ndarray, list, tuple, pd.DataFrame, pd.Series)):
         computable_empty = np.all(np.isnan(data) | np.equal(data, 0))
-    elif isinstance(data, pd.DataFrame):
-        computable_empty = data.dropna().loc[~(data == 0).all(axis=1)].empty
-    elif isinstance(data, pd.Series):
-        computable_empty = data[data > 0].dropna().empty
     elif isinstance(data, dict):
         data = pd.DataFrame.from_dict(data)
-        computable_empty = data.dropna().loc[~(data == 0).all(axis=1)].empty
+        computable_empty = np.all(np.isnan(data) | np.equal(data, 0))
 
     return computable_empty
 
@@ -49,7 +45,7 @@ def is_computable_empty(data: Parameters) -> bool:
 def format_data(data: Parameters, required_columns: List[Any], measure: str) -> pd.DataFrame:
     """Formats parameter data into a dataframe."""
     if is_computable_empty(data):
-        raise ValueError('You provide only non-computable parameters. All parameters are either zero or nan values.')
+        raise ValueError('You provide only non-computable parameters. All the parameters are either zero or nan.')
 
     if isinstance(data, np.ndarray):
         data = format_array(data, required_columns, measure)

@@ -93,8 +93,9 @@ def test_cast_to_series_mismatched_length(reference, other):
 
 
 valid_inputs = (np.array([1, 2, 3]), pd.Series([1, 2, 3]), [1, 2, 3], (1, 2, 3), {'x': [1, 2, 3]},
-                np.array([0, 1, 2, 3, np.nan]), pd.Series([1, 2, 3, np.nan, 0]), [0, 1, 2, 3, np.nan],
-                         (0, 1, 2, 3, np.nan), {'x': [1, 2, 3], 'y':[0, 0, np.nan]})
+                pd.DataFrame({'x': [1, 2, 3]}), np.array([0, 1, 2, 3, np.nan]), pd.Series([1, 2, 3, np.nan, 0]),
+                [0, 1, 2, 3, np.nan], (0, 1, 2, 3, np.nan), {'x': [1, 2, 3], 'y': [1, 0, np.nan]},
+                pd.DataFrame([1, 2, 3, np.nan]))
 
 
 @pytest.mark.parametrize('parameter', valid_inputs)
@@ -103,9 +104,10 @@ def test_verify_parameters_valid(parameter):
 
 
 invalid_inputs = (np.array([0, 0, 0]), pd.Series([0, 0, 0]), [0, 0, 0], (0, 0, 0), {'x': [0, 0, 0]},
-                  np.array([np.nan, np.nan, 0]), pd.Series([np.nan, np.nan, 0]), [np.nan, np.nan, 0],
-                  (np.nan, np.nan, 0), {'x': [np.nan, np.nan, 0]},
-                  np.array([np.nan]), pd.Series([np.nan]), [np.nan], {'x': [np.nan]})
+                  pd.DataFrame({'x': [0, 0, 0]}), np.array([np.nan, np.nan, 0]), pd.Series([np.nan, np.nan, 0]),
+                  [np.nan, np.nan, 0], (np.nan, np.nan, 0), {'x': [np.nan, np.nan, 0]},
+                  pd.DataFrame({'x': [np.nan, np.nan, 0]}), np.array([np.nan]), pd.Series([np.nan]), [np.nan],
+                  {'x': [np.nan]}, pd.DataFrame({'x': [np.nan]}))
 
 
 @pytest.mark.parametrize('parameter', invalid_inputs)
