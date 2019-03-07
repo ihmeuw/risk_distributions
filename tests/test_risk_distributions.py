@@ -4,7 +4,11 @@ import pytest
 
 from risk_distributions import risk_distributions
 
-distributions = risk_distributions.EnsembleDistribution.distribution_map
+
+distributions = [risk_distributions.Beta, risk_distributions.Exponential, risk_distributions.Gamma,
+                 risk_distributions.Gumbel, risk_distributions.InverseGamma, risk_distributions.InverseWeibull,
+                 risk_distributions.LogLogistic, risk_distributions.LogNormal, risk_distributions.MirroredGumbel,
+                 risk_distributions.MirroredGamma, risk_distributions.Normal, risk_distributions.Weibull]
 
 
 @pytest.fixture
@@ -15,7 +19,7 @@ def test_data():
     return test_mean, test_sd, test_q
 
 
-@pytest.mark.parametrize('distribution', distributions.values())
+@pytest.mark.parametrize('distribution', distributions)
 def test_cdf_beta(test_data, distribution):
     mean, sd, test_q = test_data
     test_distribution = distribution(mean=mean, sd=sd)
