@@ -158,8 +158,6 @@ class BaseDistribution:
         return x
 
 
-# TODO: DECIDE ON PROCESSING PER DISTRIBUTION
-
 class Beta(BaseDistribution):
 
     distribution = stats.beta
@@ -494,10 +492,12 @@ class EnsembleDistribution:
         x = pd.Series(np.nan, index=q.index)
 
         x.loc[computable] = 0
-        for name, parameters in self.parameters.items():
-            w = weights.loc[computable, name]
-            params = parameters.loc[computable] if len(parameters) > 1 else parameters
-            x += w * self.distribution_map[name](parameters=params).ppf(q.loc[computable])
+
+        if not computable.empty:
+            for name, parameters in self.parameters.items():
+                w = weights.loc[computable, name]
+                params = parameters.loc[computable] if len(parameters) > 1 else parameters
+                x += w * self.distribution_map[name](parameters=params).ppf(q.loc[computable])
 
         if single_val:
             x = x.iloc[0]

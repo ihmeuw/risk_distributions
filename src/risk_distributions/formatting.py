@@ -42,10 +42,27 @@ def is_computable_empty(data: Parameters) -> bool:
     return computable_empty
 
 
+def make_nan_data(data):
+    if isinstance(data, np.ndarray):
+        data = np.empty(data.shape)
+        data[:] = np.nan
+    elif isinstance(data, pd.Series):
+        data = pd.Series(np.nan, index=data.index)
+    elif isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(np.nan, columns=data.columns, index=data.index)
+    elif isinstance(data, list):
+        data = [np.nan] * len(data)
+    elif isinstance(data, tuple):
+        data = tuple([np.nan] * len(data))
+    elif isinstance(data, dict):
+        data = {k: [np.nan]*len(list(v)) for k, v in data.items()}
+    return data
+
+
 def format_data(data: Parameters, required_columns: List[Any], measure: str) -> pd.DataFrame:
     """Formats parameter data into a dataframe."""
     if is_computable_empty(data):
-        raise ValueError('You provide only non-computable parameters. All the parameters are either zero or nan.')
+        data = make_nan_data(data)
 
     if isinstance(data, np.ndarray):
         data = format_array(data, required_columns, measure)

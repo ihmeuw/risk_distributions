@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from risk_distributions.formatting import cast_to_series, is_computable_empty
+from risk_distributions.formatting import cast_to_series, is_computable_empty, make_nan_data
 
 
 valid_inputs = (np.array([1]), pd.Series([1]), [1], (1,), 1)
@@ -113,3 +113,12 @@ invalid_inputs = (np.array([0, 0, 0]), pd.Series([0, 0, 0]), [0, 0, 0], (0, 0, 0
 @pytest.mark.parametrize('parameter', invalid_inputs)
 def test_verify_parameters_invalid(parameter):
     assert is_computable_empty(parameter)
+
+
+@pytest.mark.parametrize('parameter', invalid_inputs)
+def test_format_data_invalid_parameters(parameter):
+    if isinstance(parameter, dict):
+        data = list(make_nan_data(parameter).values())
+    else:
+        data = make_nan_data(parameter)
+    assert np.all(np.isnan(data))
