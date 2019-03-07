@@ -180,10 +180,11 @@ class Beta(BaseDistribution):
 
     def process(self, data: pd.Series, parameters: pd.DataFrame, process_type: str) -> pd.Series:
         x_min, x_max = parameters.loc[data.index, 'x_min'], parameters.loc[data.index, 'x_max']
-        if process_type == 'pdf_preprocess':
+
+        if process_type == 'pdf_preprocess' or process_type == 'cdf_preprocess':
             value = data - x_min
         elif process_type == 'ppf_postprocess':
-            value = data + x_max - x_min
+            value = data + x_min
         else:
             value = super().process(data, parameters, process_type)
         return value
@@ -330,7 +331,7 @@ class LogNormal(BaseDistribution):
 
 class MirroredGumbel(BaseDistribution):
 
-    distribution = stats.gumbel_r
+    distribution = stats.gumbel_l
     expected_parameters = ('loc', 'scale')
 
     @staticmethod
@@ -343,13 +344,10 @@ class MirroredGumbel(BaseDistribution):
 
     def process(self, data: pd.Series, parameters: pd.DataFrame, process_type: str) -> pd.Series:
         x_min, x_max = parameters.loc[data.index, 'x_min'], parameters.loc[data.index, 'x_max']
-        if process_type == 'pdf_preprocess':
-            value = x_max - data
-        elif process_type == 'ppf_preprocess':
-            # noinspection PyTypeChecker
-            value = 1 - data
+        if process_type == 'pdf_preprocess' or process_type == 'cdf_preprocess':
+            value = data - x_min
         elif process_type == 'ppf_postprocess':
-            value = x_max - data
+            value = data + x_min
         else:
             value = super().process(data, parameters, process_type)
         return value
@@ -370,14 +368,9 @@ class MirroredGamma(BaseDistribution):
         return params
 
     def process(self, data: pd.Series, parameters: pd.DataFrame, process_type: str) -> pd.Series:
-        x_min, x_max = parameters.loc[data.index, 'x_min'], parameters.loc[data.index, 'x_max']
-        if process_type == 'pdf_preprocess':
-            value = x_max - data
-        elif process_type == 'ppf_preprocess':
+        if process_type == 'ppf_preprocess':
             # noinspection PyTypeChecker
             value = 1 - data
-        elif process_type == 'ppf_postprocess':
-            value = x_max - data
         else:
             value = super().process(data, parameters, process_type)
         return value

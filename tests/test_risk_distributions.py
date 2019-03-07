@@ -4,6 +4,30 @@ import pytest
 
 from risk_distributions import risk_distributions
 
+distributions = risk_distributions.EnsembleDistribution.distribution_map
+
+
+@pytest.fixture
+def test_data():
+    test_mean = np.linspace(1, 50, num=100)
+    test_sd = np.linspace(1, 10, num=100)
+    test_q = np.linspace(0.001, 0.999, num=100)
+    return test_mean, test_sd, test_q
+
+
+@pytest.mark.parametrize('distribution', distributions.values())
+def test_cdf_beta(test_data, distribution):
+    mean, sd, test_q = test_data
+    test_distribution = distribution(mean=mean, sd=sd)
+    x_min, x_max = test_distribution.parameters.x_min, test_distribution.parameters.x_max
+
+    test_x = test_distribution.ppf(test_q)
+
+    #  ppf can generate the value outside of the range(x_min, x_max) which will make nan if we use it in cdf.
+    #  thus we only test the value within our range(x_min, x_max)
+    computable = (test_x >= x_min) & (test_x <= x_max)
+    assert np.allclose(test_q[computable], test_distribution.cdf(test_x)[computable])
+
 
 @pytest.mark.skip(reason="outdated api usage")
 def test_mismatched_mean_sd():

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from risk_distributions.formatting import cast_to_series
+from risk_distributions.formatting import cast_to_series, is_computable_empty
 
 
 valid_inputs = (np.array([1]), pd.Series([1]), [1], (1,), 1)
@@ -90,3 +90,24 @@ def test_cast_to_series_mismatched_length(reference, other):
 
     with pytest.raises(ValueError, match='same number of values'):
         cast_to_series(other, reference)
+
+
+valid_inputs = (np.array([1, 2, 3]), pd.Series([1, 2, 3]), [1, 2, 3], (1, 2, 3), {'x': [1, 2, 3]},
+                np.array([0, 1, 2, 3, np.nan]), pd.Series([1, 2, 3, np.nan, 0]), [0, 1, 2, 3, np.nan],
+                         (0, 1, 2, 3, np.nan), {'x': [1, 2, 3], 'y':[0, 0, np.nan]})
+
+
+@pytest.mark.parametrize('parameter', valid_inputs)
+def test_verify_parameters_valid(parameter):
+    assert not is_computable_empty(parameter)
+
+
+invalid_inputs = (np.array([0, 0, 0]), pd.Series([0, 0, 0]), [0, 0, 0], (0, 0, 0), {'x': [0, 0, 0]},
+                  np.array([np.nan, np.nan, 0]), pd.Series([np.nan, np.nan, 0]), [np.nan, np.nan, 0],
+                  (np.nan, np.nan, 0), {'x': [np.nan, np.nan, 0]},
+                  np.array([np.nan]), pd.Series([np.nan]), [np.nan], {'x': [np.nan]})
+
+
+@pytest.mark.parametrize('parameter', invalid_inputs)
+def test_verify_parameters_invalid(parameter):
+    assert is_computable_empty(parameter)
