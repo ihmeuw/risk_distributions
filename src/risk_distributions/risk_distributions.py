@@ -498,7 +498,7 @@ class EnsembleDistribution:
             for name, parameters in self.parameters.items():
                 w = weights.loc[computable, name]
                 params = parameters.loc[computable] if len(parameters) > 1 else parameters
-                x += w * self.distribution_map[name](parameters=params).ppf(q.loc[computable])
+                x += w * self._distribution_map[name](parameters=params).ppf(q.loc[computable])
 
         if single_val:
             x = x.iloc[0]
