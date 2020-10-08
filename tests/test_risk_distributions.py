@@ -32,6 +32,25 @@ def test_cdf(test_data, distribution):
     computable = (test_x >= x_min) & (test_x <= x_max)
     assert np.allclose(test_q[computable], test_distribution.cdf(test_x)[computable])
 
+@pytest.mark.parametrize('distribution', distributions)
+def test_sample_mean_and_sd(test_data, distribution):
+    mm, ss, test_q = test_data
+
+    for mean, sd in zip(mm, ss):
+        test_q = np.random.uniform(size=100_000)
+
+        test_distribution = distribution(mean=mean, sd=sd)
+        x_min, x_max = test_distribution.parameters.x_min, test_distribution.parameters.x_max
+
+        test_x = test_distribution.ppf(test_q)
+
+        #  ppf can generate the value outside of the range(x_min, x_max) which will make nan if we use it in cdf.
+        #  thus we only test the value within our range(x_min, x_max)
+        computable = (test_x >= float(x_min)) & (test_x <= float(x_max))
+    
+        assert np.allclose(test_x[computable].mean(), mean, rtol=.05)
+        assert np.allclose(test_x[computable].std(), sd, rtol=.05)
+
 
 @pytest.mark.skip(reason="outdated api usage")
 def test_mismatched_mean_sd():
