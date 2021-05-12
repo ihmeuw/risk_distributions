@@ -469,53 +469,19 @@ class EnsembleDistribution:
 
         return weights, params
 
+
     def pdf(self, x: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
-        single_val = isinstance(x, (float, int))
-        values_only = isinstance(x, np.ndarray)
+        return self._compute('pdf', x)
 
-        x, weights = format_call_data(x, self.weights)
-
-        computable = weights[(weights.sum(axis=1) != 0) & ~np.isnan(x)].index
-
-        p = pd.Series(np.nan, index=x.index)
-
-        if not computable.empty:
-            p.loc[computable] = 0
-            for name, parameters in self.parameters.items():
-                w = weights.loc[computable, name]
-                params = parameters.loc[computable] if len(parameters) > 1 else parameters
-                p += w * self._distribution_map[name](parameters=params).pdf(x.loc[computable])
-
-        if single_val:
-            p = p.iloc[0]
-        if values_only:
-            p = p.values
-        return p
-
-    def ppf(self, q: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
-        single_val = isinstance(q, (float, int))
-        values_only = isinstance(q, np.ndarray)
-
-        q, weights = format_call_data(q, self.weights)
-
-        computable = weights[(weights.sum(axis=1) != 0) & ~np.isnan(q)].index
-
-        x = pd.Series(np.nan, index=q.index)
-
-        if not computable.empty:
-            x.loc[computable] = 0
-            for name, parameters in self.parameters.items():
-                w = weights.loc[computable, name]
-                params = parameters.loc[computable] if len(parameters) > 1 else parameters
-                x += w * self._distribution_map[name](parameters=params).ppf(q.loc[computable])
-
-        if single_val:
-            x = x.iloc[0]
-        if values_only:
-            x = x.values
-        return x
 
     def cdf(self, x: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
+        return self._compute('cdf', x)
+
+
+    def ppf(self, x: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
+        return self._compute('ppf', x)
+
+    def _compute(self, func_to_call, x: Union[pd.Series, np.ndarray, float, int]) -> Union[pd.Series, np.ndarray, float]:
         single_val = isinstance(x, (float, int))
         values_only = isinstance(x, np.ndarray)
 
@@ -524,14 +490,17 @@ class EnsembleDistribution:
         computable = weights[(weights.sum(axis=1) != 0) & ~np.isnan(x)].index
 
         c = pd.Series(np.nan, index=x.index)
-
         c.loc[computable] = 0
+
+        distribution_map = pd.Series([np.random.choice(weights.columns, p=weights.iloc[0].values) for _ in x.index], index=x.index)
 
         if not computable.empty:
             for name, parameters in self.parameters.items():
-                w = weights.loc[computable, name]
-                params = parameters.loc[computable] if len(parameters) > 1 else parameters
-                c += w * self._distribution_map[name](parameters=params).cdf(x.loc[computable])
+                idx = distribution_map[distribution_map==name].index
+                if len(idx):
+                    params = parameters.loc[computable.intersection(idx)] if len(parameters) > 1 else parameters
+                    func = getattr(self._distribution_map[name](parameters=params), func_to_call)
+                    c[idx] = func(x[idx])
 
         if single_val:
             c = c.iloc[0]
