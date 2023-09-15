@@ -2,6 +2,8 @@
 
  - Address Pandas 2.1 FutureWarnings
 
+**2.0.11 - 12/27/22**
+
  - Update PR template
  - Modify codeowners
  - Update CI and setup to build python 3.7-3.10
