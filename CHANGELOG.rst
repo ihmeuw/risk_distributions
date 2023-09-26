@@ -1,4 +1,4 @@
-**2.0.12 - 09/15/23**
+**2.0.12 - 09/26/23**
 
  - Address Pandas 2.1 FutureWarnings
 
