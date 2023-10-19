@@ -1,3 +1,7 @@
+**2.0.14 - 10/19/23**
+
+ - Implement setuptools-scm
+
 **2.0.13 - 09/26/23**
 
  - Increment version number
