@@ -113,9 +113,7 @@ class BaseDistribution:
         """
         return data
 
-    def pdf(
-        self, x: pd.Series | np.ndarray | float | int
-    ) -> pd.Series | np.ndarray | float:
+    def pdf(self, x: pd.Series | np.ndarray | float | int) -> pd.Series | np.ndarray | float:
         single_val = isinstance(x, (float, int))
         values_only = isinstance(x, np.ndarray)
 
@@ -150,9 +148,7 @@ class BaseDistribution:
             p = p.values
         return p
 
-    def ppf(
-        self, q: pd.Series | np.ndarray | float | int
-    ) -> pd.Series | np.ndarray | float:
+    def ppf(self, q: pd.Series | np.ndarray | float | int) -> pd.Series | np.ndarray | float:
         single_val = isinstance(q, (float, int))
         values_only = isinstance(q, np.ndarray)
 
@@ -187,9 +183,7 @@ class BaseDistribution:
             x = x.values
         return x
 
-    def cdf(
-        self, x: pd.Series | np.ndarray | float | int
-    ) -> pd.Series | np.ndarray | float:
+    def cdf(self, x: pd.Series | np.ndarray | float | int) -> pd.Series | np.ndarray | float:
         single_val = isinstance(x, (float, int))
         values_only = isinstance(x, np.ndarray)
 
@@ -597,9 +591,7 @@ class EnsembleDistribution:
 
         return weights, params
 
-    def pdf(
-        self, x: pd.Series | np.ndarray | float | int
-    ) -> pd.Series | np.ndarray | float:
+    def pdf(self, x: pd.Series | np.ndarray | float | int) -> pd.Series | np.ndarray | float:
         single_val = isinstance(x, (float, int))
         values_only = isinstance(x, np.ndarray)
 
@@ -673,9 +665,7 @@ class EnsembleDistribution:
             x = x.values
         return x
 
-    def cdf(
-        self, x: pd.Series | np.ndarray | float | int
-    ) -> pd.Series | np.ndarray | float:
+    def cdf(self, x: pd.Series | np.ndarray | float | int) -> pd.Series | np.ndarray | float:
         single_val = isinstance(x, (float, int))
         values_only = isinstance(x, np.ndarray)
 
