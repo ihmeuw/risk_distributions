@@ -34,6 +34,7 @@ def test_cdf(test_data, distribution):
     test_distribution = distribution(mean=mean, sd=sd)
     x_min, x_max = test_distribution.parameters.x_min, test_distribution.parameters.x_max
 
+    # TODO MIC-5595: Find and fix places where inputs are mutated in-place
     test_x = test_distribution.ppf(test_q.copy())
 
     #  ppf can generate the value outside of the range(x_min, x_max) which will make nan if we use it in cdf.
