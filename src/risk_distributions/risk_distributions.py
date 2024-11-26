@@ -57,13 +57,13 @@ class BaseDistribution:
             # transforming them into RuntimeWarnings. This gets noisy in our logs.
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", RuntimeWarning)
-                parameters.loc[
-                    computable, list(cls.expected_parameters)
-                ] = cls._get_parameters(
-                    mean.loc[computable],
-                    sd.loc[computable],
-                    parameters.loc[computable, "x_min"],
-                    parameters.loc[computable, "x_max"],
+                parameters.loc[computable, list(cls.expected_parameters)] = (
+                    cls._get_parameters(
+                        mean.loc[computable],
+                        sd.loc[computable],
+                        parameters.loc[computable, "x_min"],
+                        parameters.loc[computable, "x_max"],
+                    )
                 )
 
         return parameters
