@@ -43,9 +43,8 @@ if __name__ == "__main__":
         long_description = f.read()
 
     install_requirements = [
-        "vivarium_dependencies[pandas,scipy]",
+        "vivarium_dependencies[pandas,numpy,scipy]",
         "vivarium_build_utils>=2.0.1,<3.0.0",
-        "numpy",
     ]
 
     setup_requires = ["setuptools_scm"]
