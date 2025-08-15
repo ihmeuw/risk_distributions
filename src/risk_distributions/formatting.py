@@ -174,7 +174,12 @@ def format_dict(
             f"If passing values for {measure} as a dictionary, you "
             f"must supply only keys {required_columns}."
         )
-    data = {key: list(val) for key, val in data.items()}
+    for key, val in data.items():
+        if isinstance(val, (int, float)):
+            data[key] = [val]
+        else:
+            data[key] = list(val)
+            
     if len(set(len(val) for val in data.values())) != 1:
         raise ValueError(
             f"If passing values for {measure} as a dictionary, you "
