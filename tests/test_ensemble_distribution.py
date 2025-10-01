@@ -50,3 +50,51 @@ def test_weight_formats(weights: Parameters) -> None:
     )
     assert_equal(weights_original, weights)
     pd.testing.assert_frame_equal(dist.weights, pd.DataFrame(weights_df))
+
+
+weights_base_missing = copy.deepcopy(weights_base)
+del weights_base_missing["exp"]
+weights_missing_df = pd.DataFrame({k: [v] for k, v in weights_base_missing.items()})
+
+
+@pytest.mark.parametrize(
+    "weights",
+    [
+        weights_base_missing,
+        {k: [v] for k, v in weights_base_missing.items()},
+        pd.Series(weights_base_missing),
+        weights_missing_df,
+    ],
+)
+def test_missing_weights(weights: Parameters) -> None:
+    weights_original = copy.deepcopy(weights)
+    weights_expected = copy.deepcopy(weights_base_missing)
+    weights_expected["exp"] = 0.0
+    weights_missing_df = pd.DataFrame({k: [v] for k, v in weights_expected.items()})
+    dist = EnsembleDistribution(
+        weights,
+        mean=1,
+        sd=1,
+    )
+    assert_equal(weights_original, weights)
+    pd.testing.assert_frame_equal(dist.weights, pd.DataFrame(weights_missing_df))
+
+
+@pytest.mark.parametrize(
+    "weights",
+    [
+        pd.Series(weights_base_missing).reset_index(drop=True),
+        list(weights_base_missing.values()),
+        tuple(weights_base_missing.values()),
+        np.array(list(weights_base_missing.values())),  # Column Vector
+        np.array([list(weights_base_missing.values())]),  # Row Vector
+        np.array([list(weights_base_missing.values())]).T,
+    ],
+)
+def test_missing_weights_invalid(weights: Parameters) -> None:
+    with pytest.raises(ValueError):
+        EnsembleDistribution(
+            weights,
+            mean=1,
+            sd=1,
+        )
