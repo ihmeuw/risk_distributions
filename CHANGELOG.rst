@@ -1,6 +1,7 @@
 **2.2.0 - 10/02/25**
 
  - Allow user to pass incomplete parameter sets to EnsembleDistribution (filled with zeros)
+ - Backfill some unit tests
 
 **2.1.6 - 08/01/25**
 
