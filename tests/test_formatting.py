@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from risk_distributions.formatting import cast_to_series, format_data_frame, format_data
+from risk_distributions.formatting import cast_to_series, format_data, format_data_frame
 
 valid_inputs = (np.array([1]), pd.Series([1]), [1], (1,), 1)
 
