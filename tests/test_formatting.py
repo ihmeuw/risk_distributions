@@ -126,8 +126,8 @@ def test_format_data_unsupported_types(data):
     """Test format_data with unsupported data types."""
     with pytest.raises(TypeError, match="Unsupported data type"):
         format_data(data, ["param1"], "test")
-        
-        
+
+
 @pytest.mark.parametrize(
     "data, required_columns, expected",
     [
