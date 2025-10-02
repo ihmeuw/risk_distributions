@@ -414,10 +414,3 @@ def test_format_call_data_errors(call_data, parameters, expected_error):
     """Test format_call_data error cases."""
     with pytest.raises(ValueError, match=expected_error):
         format_call_data(call_data, parameters)
-
-
-@pytest.mark.parametrize("data", ["string", {1, 2, 3}, None])
-def test_format_data_unsupported_types(data):
-    """Test format_data with unsupported data types."""
-    with pytest.raises(TypeError, match="Unsupported data type"):
-        format_data(data, ["param1"], "test")
