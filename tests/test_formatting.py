@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from risk_distributions.formatting import cast_to_series, format_data_frame
+from risk_distributions.formatting import cast_to_series, format_data_frame, format_data
 
 valid_inputs = (np.array([1]), pd.Series([1]), [1], (1,), 1)
 
@@ -114,3 +114,10 @@ def test_format_data_frame(data_columns, required_columns, match):
 
     with pytest.raises(ValueError, match=match):
         format_data_frame(data, required_columns, measure="test")
+
+
+@pytest.mark.parametrize("data", ["string", {1, 2, 3}, None])
+def test_format_data_unsupported_types(data):
+    """Test format_data with unsupported data types."""
+    with pytest.raises(TypeError, match="Unsupported data type"):
+        format_data(data, ["param1"], "test")
