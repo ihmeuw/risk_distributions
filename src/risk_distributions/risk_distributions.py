@@ -535,7 +535,7 @@ class Weibull(BaseDistribution):
 class EnsembleDistribution:
     """Represents an arbitrary distribution as a weighted sum of several concrete distribution types."""
 
-    _distribution_map = {
+    distribution_map = {
         "betasr": Beta,
         "exp": Exponential,
         "gamma": Gamma,
@@ -567,13 +567,13 @@ class EnsembleDistribution:
         mean: Parameter = None,
         sd: Parameter = None,
     ) -> tuple[pd.DataFrame, dict[str, pd.DataFrame]]:
-        expected_columns = list(cls._distribution_map.keys())
+        expected_columns = list(cls.distribution_map.keys())
 
         weights = cls.fill_missing_weights(weights, expected_columns)
         weights = format_data(weights, expected_columns, "weights")
 
         params = {}
-        for name, dist in cls._distribution_map.items():
+        for name, dist in cls.distribution_map.items():
             try:
                 param = parameters[name] if parameters else None
                 params[name] = dist.get_parameters(param, mean, sd)
@@ -631,9 +631,7 @@ class EnsembleDistribution:
             for name, parameters in self.parameters.items():
                 w = weights.loc[computable, name]
                 params = parameters.loc[computable] if len(parameters) > 1 else parameters
-                p += w * self._distribution_map[name](parameters=params).pdf(
-                    x.loc[computable]
-                )
+                p += w * self.distribution_map[name](parameters=params).pdf(x.loc[computable])
 
         if single_val:
             p = p.iloc[0]
@@ -682,7 +680,7 @@ class EnsembleDistribution:
                         if len(parameters) > 1
                         else parameters
                     )
-                    x[idx] = self._distribution_map[name](parameters=params).ppf(q[idx])
+                    x[idx] = self.distribution_map[name](parameters=params).ppf(q[idx])
 
         if single_val:
             x = x.iloc[0]
@@ -706,9 +704,7 @@ class EnsembleDistribution:
             for name, parameters in self.parameters.items():
                 w = weights.loc[computable, name]
                 params = parameters.loc[computable] if len(parameters) > 1 else parameters
-                c += w * self._distribution_map[name](parameters=params).cdf(
-                    x.loc[computable]
-                )
+                c += w * self.distribution_map[name](parameters=params).cdf(x.loc[computable])
 
         if single_val:
             c = c.iloc[0]
