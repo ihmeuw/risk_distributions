@@ -1,7 +1,3 @@
-**2.2.2 - 12/30/25**
-
- - Make EnsembleDistribution.distribution_map a public attribute
-
 **2.2.1 - 11/20/25**
 
  - Improve 'make build-env': better handle args and make the env name optional
