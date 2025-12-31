@@ -1,4 +1,4 @@
-**2.2.1 - 12/31/25**
+**2.2.2 - 12/31/25**
 
  - Create new EnsembleDistribution method to get expected parameters
 
