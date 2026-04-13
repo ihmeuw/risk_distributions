@@ -29,7 +29,6 @@ class BaseDistribution:
         computability_bound: float = 0.001,
     ):
         self.parameters = self.get_parameters(parameters, mean, sd, computability_bound)
-        # NOTE: Handling issues presented by needing both instance and class level access to computability_bound
         self.computability_bound = computability_bound
 
     @classmethod
@@ -40,7 +39,9 @@ class BaseDistribution:
         sd: Parameter = None,
         computability_bound: float = 0.001,
     ) -> pd.DataFrame:
-        required_parameters = list(cls.expected_parameters + ("x_min", "x_max"))
+        required_parameters = list(
+            cls.expected_parameters + ("computability_min", "computability_max")
+        )
         if parameters is not None:
             if not (mean is None and sd is None):
                 raise ValueError(
@@ -86,9 +87,12 @@ class BaseDistribution:
         cls, parameters: pd.DataFrame, computability_bound: float
     ) -> pd.DataFrame:
         kwargs = {parameter: parameters[parameter] for parameter in cls.expected_parameters}
-        x_min = cls.distribution(**kwargs).ppf(computability_bound)
-        x_max = cls.distribution(**kwargs).ppf(1 - computability_bound)
-        return pd.DataFrame({"x_min": x_min, "x_max": x_max}, index=parameters.index)
+        compatability_min = cls.distribution(**kwargs).ppf(computability_bound)
+        compatability_max = cls.distribution(**kwargs).ppf(1 - computability_bound)
+        return pd.DataFrame(
+            {"computability_min": compatability_min, "computability_max": compatability_max},
+            index=parameters.index,
+        )
 
     @staticmethod
     def _get_parameters(
@@ -235,15 +239,18 @@ class MirroredDistribution(BaseDistribution):
         computability_bound: float = 0.001,
     ):
         super().__init__(parameters, mean, sd, computability_bound)
-        # Match inddex of mean/sd to parameters for ease of use in mirror point calculation
+        # Match index of mean/sd to parameters for ease of use in mirror point calculation
         mean, sd = cast_to_series(mean, sd)
-        self.mirrored_point = self.compute_mirror_point(mean, sd, computability_bound)
+        self.mirror_point = self.compute_mirror_point(mean, sd, computability_bound)
 
     @staticmethod
     def compute_mirror_point(
         mean: pd.Series, sd: pd.Series, computability_bound: float
     ) -> pd.Series:
-        """Computes the point around which the distribution is mirrored."""
+        """Computes the point around which the distribution is mirrored.
+
+        NOTE: In the corresponding GBD code, this is called 'x_max'.
+        """
         alpha = 1 + sd**2 / mean**2
         scale = mean / np.sqrt(alpha)
         s = np.sqrt(np.log(alpha))
@@ -484,12 +491,12 @@ class MirroredGumbel(MirroredDistribution):
         self, data: pd.Series, parameters: pd.DataFrame, process_type: str
     ) -> pd.Series:
         if process_type in ["pdf_preprocess", "cdf_preprocess"]:
-            value = self.mirrored_point - data
+            value = self.mirror_point - data
         elif process_type in ["ppf_preprocess", "cdf_postprocess"]:
             # noinspection PyTypeChecker
             value = 1 - data
         elif process_type == "ppf_postprocess":
-            value = self.mirrored_point - data
+            value = self.mirror_point - data
         else:
             value = super().process(data, parameters, process_type)
         return value
@@ -504,11 +511,11 @@ class MirroredGamma(MirroredDistribution):
         mean: pd.Series, sd: pd.Series, computability_bound: float
     ) -> pd.DataFrame:
         # noinspection PyTypeChecker
-        mirrored_point = MirroredGamma.compute_mirror_point(mean, sd, computability_bound)
+        mirror_point = MirroredGamma.compute_mirror_point(mean, sd, computability_bound)
         params = pd.DataFrame(
             {
-                "a": ((mirrored_point - mean) / sd) ** 2,
-                "scale": sd**2 / (mirrored_point - mean),
+                "a": ((mirror_point - mean) / sd) ** 2,
+                "scale": sd**2 / (mirror_point - mean),
             },
             index=mean.index,
         )
@@ -518,12 +525,12 @@ class MirroredGamma(MirroredDistribution):
         self, data: pd.Series, parameters: pd.DataFrame, process_type: str
     ) -> pd.Series:
         if process_type in ["pdf_preprocess", "cdf_preprocess"]:
-            value = self.mirrored_point - data
+            value = self.mirror_point - data
         elif process_type in ["ppf_preprocess", "cdf_postprocess"]:
             # noinspection PyTypeChecker
             value = 1 - data
         elif process_type == "ppf_postprocess":
-            value = self.mirrored_point - data
+            value = self.mirror_point - data
         else:
             value = super().process(data, parameters, process_type)
         return value

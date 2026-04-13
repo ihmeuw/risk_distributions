@@ -1,7 +1,7 @@
-**2.3.2 - 04/13/26**
+**2.3.2 - 04/14/26**
 
  - Add computability bound argument to Distribution class
- - Make x_min and x_max more strict due to computability bound changes
+ - Make x_min and x_max less strict due to computability bound changes
 
 **2.3.1 - 03/16/26**
 
