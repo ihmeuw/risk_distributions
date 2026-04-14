@@ -42,10 +42,7 @@ if __name__ == "__main__":
     with open(os.path.join(base_dir, "README.rst")) as f:
         long_description = f.read()
 
-    install_requirements = [
-        "vivarium_dependencies[pandas,numpy,scipy]",
-        "vivarium_build_utils>=2.0.1,<3.0.0",
-    ]
+    install_requirements = ["vivarium_dependencies[pandas,numpy,scipy,vivarium_build_utils]"]
 
     setup_requires = ["setuptools_scm"]
 
