@@ -1,6 +1,19 @@
-**2.2.3 - 04/15/26**
+**2.3.2 - 04/15/26**
 
  - Update vivarium_build_utils pin
+
+**2.3.1 - 03/16/26**
+
+ - Validate version prior to deploying
+ - Bugfix: Update intersphinx mapping for python and pandas
+
+**2.3.0 - 02/19/26**
+
+ - Add support for Python versions 3.12 and 3.13
+
+**2.2.3 - 01/22/26**
+
+ - Add pandas classes to nitpick-exceptions
 
 **2.2.2 - 12/31/25**
 
