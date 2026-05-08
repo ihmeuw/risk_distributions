@@ -1,4 +1,4 @@
-**2.3.4 - 05/05/26**
+**2.3.4 - 05/07/26**
 
  - Bugfix: Persist mirror_point in parameters so MirroredDistribution can be instantiated without mean/sd
 
