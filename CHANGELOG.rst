@@ -1,4 +1,4 @@
-**2.3.5 - 05/19/26**
+**2.4.0 - 05/19/26**
 
 Final release. This is a backward-compatibility shim - it ships no code and
 exists only so ``pip install risk_distributions`` continues to resolve. The

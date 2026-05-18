@@ -14,7 +14,7 @@ If you have a specific version pinned (e.g. ``risk_distributions==2.3.4``):
   installed version. Those releases still ship the original ``risk_distributions``
   module and the per-version API reference is preserved for them.
 
-If you are not pinned or you are otherwise on ``risk_distributions >= 2.3.5``:
+If you are not pinned or you are otherwise on ``risk_distributions >= 2.4.0``:
 
   You are running the **shim release**, which installs
   `vivarium-risk-distributions <https://pypi.org/project/vivarium-risk-distributions/>`_

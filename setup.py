@@ -43,7 +43,7 @@ setup(
         "vivarium-compat>=0.4.0",
     ],
     python_requires=">=3.10",
-    # Version is derived from the git tag at build time (e.g. v2.3.5 -> 2.3.5).
+    # Version is derived from the git tag at build time (e.g. v2.4.0 -> 2.4.0).
     # Tag, then `python -m build`, then `twine upload`.
     use_scm_version={
         "tag_regex": r"^(?P<prefix>v)?(?P<version>[^\+]+)(?P<suffix>.*)?$",

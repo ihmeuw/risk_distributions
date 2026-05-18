@@ -16,7 +16,7 @@ What changed
   ``ihmeuw/vivarium-suite`` (under ``libs/risk-distributions/``)
 - **Docs:** https://vivarium-risk-distributions.readthedocs.io/
 
-What this last release (v2.3.5) is
+What this last release (v2.4.0) is
 ----------------------------------
 
 A backward-compatibility shim. It contains no code; installing it pulls in:
