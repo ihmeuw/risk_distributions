@@ -1,3 +1,18 @@
+**2.4.0 - 05/19/26**
+
+Final release. This is a backward-compatibility shim - it ships no code and
+exists only so ``pip install risk_distributions`` continues to resolve. The
+real package has been renamed to ``vivarium-risk-distributions`` and the
+import path has moved to ``vivarium.risk_distributions``.
+
+- Installing this version pulls in ``vivarium-risk-distributions>=3.0.0``
+  (the real implementation) and ``vivarium-compat>=0.4.0`` (an import hook
+  that redirects ``import risk_distributions`` to
+  ``vivarium.risk_distributions`` with a ``DeprecationWarning``).
+- The standalone ``ihmeuw/risk_distributions`` repository has been archived;
+  development continues in the ``ihmeuw/vivarium-suite`` monorepo under
+  ``libs/risk-distributions/``.
+
 **2.3.4 - 05/07/26**
 
  - Bugfix: Persist mirror_point in parameters so MirroredDistribution can be instantiated without mean/sd
