@@ -1,3 +1,16 @@
+**2.3.5 - 07/15/26**
+
+Final release. Adds an archive banner to the README pointing at the ``vivarium-suite``
+monorepo (``libs/risk-distributions/``, published as ``vivarium-risk-distributions``).
+
+**2.4.0 - 05/19/26** (YANKED)
+
+Metapackage/shim approach: shipped no code and pulled ``vivarium-risk-distributions``
+to bridge ``import risk_distributions`` to ``vivarium.risk_distributions``.
+Yanked because the team abandoned the compat-bridge path; the final release
+of this repo is ``v2.3.5`` instead, which ships ``v2.3.4``'s code with an
+archive banner.
+
 **2.3.4 - 05/07/26**
 
  - Bugfix: Persist mirror_point in parameters so MirroredDistribution can be instantiated without mean/sd
